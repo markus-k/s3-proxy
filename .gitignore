@@ -1,0 +1,4 @@
+/target
+
+# might contain secrets
+.env
