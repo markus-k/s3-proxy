@@ -51,7 +51,7 @@ fn s3_range_for_header(range: Range) -> Option<(u64, Option<u64>)> {
                 match start {
                     Bound::Unbounded => 0,
                     Bound::Included(start) => start,
-                    _ => unreachable!(),
+                    _ => unreachable!(), // Range never returns Excluded
                 },
                 match end {
                     Bound::Unbounded => None,
@@ -212,5 +212,30 @@ mod tests {
         let bucket_path = get_bucket_path("/media/foo/bar", &endpoints);
 
         assert_eq!(bucket_path.as_deref(), Some("/app/files/foo/bar"));
+    }
+
+    #[test]
+    fn test_s3_range_header() {
+        use axum::headers::{Header, HeaderValue};
+
+        assert_eq!(
+            s3_range_for_header(Range::bytes(0..=100).unwrap()),
+            Some((0, Some(100)))
+        );
+        assert_eq!(
+            s3_range_for_header(Range::bytes(0..).unwrap()),
+            Some((0, None))
+        );
+        assert_eq!(
+            s3_range_for_header(Range::bytes(..=200).unwrap()),
+            Some((0, Some(200)))
+        );
+        assert_eq!(
+            s3_range_for_header(
+                Range::decode(&mut [HeaderValue::from_str("bytes=1-2,4-5").unwrap()].iter())
+                    .unwrap()
+            ),
+            None
+        );
     }
 }
