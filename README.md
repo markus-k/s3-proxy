@@ -1,4 +1,6 @@
 # `s3-proxy`, a reverse proxy for S3 buckets
+[![Rust](https://github.com/markus-k/s3-proxy/actions/workflows/rust.yml/badge.svg)](https://github.com/markus-k/s3-proxy/actions/workflows/rust.yml)
+![License](https://img.shields.io/github/license/markus-k/s3-proxy)
 
 `s3-proxy` is a "cloud-native" reverse proxy for S3 buckets.
 
